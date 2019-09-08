@@ -1,0 +1,9 @@
+[package]
+name = "complex_map"
+version = "0.1.0"
+authors = ["komm"]
+edition = "2018"
+
+[dependencies]
+num-complex = "0.2.3"
+image = "0.22.2"
