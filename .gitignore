@@ -2,4 +2,3 @@
 **/*.rs.bk
 /src/colormap.rs
 /src/col.hpp
-pic.png
