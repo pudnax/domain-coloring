@@ -11,8 +11,8 @@ const H: u32 = 1600;
 const FOVY: u32 = 1;
 const SUPER_SAMPLING: u32 = 1;
 
-static SW: u32 = SUPER_SAMPLING * W;
-static SH: u32 = SUPER_SAMPLING * H;
+const SW: u32 = SUPER_SAMPLING * W;
+const SH: u32 = SUPER_SAMPLING * H;
 
 fn complex_function(z: Complex<f64>) -> Complex<f64> {
     // z.inv().sin()
