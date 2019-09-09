@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 pub enum ColormapType {
     Heat,
     Jet,
@@ -75,6 +76,7 @@ pub struct ColorMap {
     data: Vec<Color>,
 }
 
+#[allow(clippy::approx_constant)]
 impl ColorMap {
   pub   fn new(name: ColormapType) -> ColorMap {
         // let data = Vec::new();
@@ -1401,6 +1403,7 @@ impl ColorMap {
         }
     }
 
+#[allow(clippy::many_single_char_names)]
 pub fn get_hot_color(x: f64) -> Color {
     let x = x.max(0.).min(1.);
 
