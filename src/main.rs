@@ -17,6 +17,7 @@ const SH: u32 = SUPER_SAMPLING * H;
 fn complex_function(z: Complex<f64>) -> Complex<f64> {
     // z.inv().sin()
     ((z - 1.) / (z + 1.)).cos().powi(20)
+    // ((z * z - 1.) * (z - 2. - Complex::i()).powi(2)) / (z * z + 2. + 2. * Complex::i())
 }
 
 fn complex_color(z: Complex<f64>, color_map: &col::ColorMap) -> image::Rgba<u8> {
