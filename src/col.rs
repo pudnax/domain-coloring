@@ -78,6 +78,39 @@ pub struct ColorMap {
 
 #[allow(clippy::approx_constant)]
 impl ColorMap {
+
+    #[allow(clippy::many_single_char_names)]
+    pub fn get_hot_color(x: f64) -> Color {
+        let x = x.max(0.).min(1.);
+
+        let r = Color::new(1.0, 0.0, 0.0);
+        let g = Color::new(0.0, 1.0, 0.0);
+        let b = Color::new(0.0, 0.0, 1.0);
+
+        if x < 0.4 {
+            let t = x / 0.4;
+            t * r
+        } else if x < 0.8 {
+            let t = (x - 0.4) / (0.8 - 0.4);
+            r + t * g
+        } else {
+            let t = (x - 0.8) / (1.0 - 0.8);
+            r + g + t * b
+        }
+    }
+
+    pub fn get_gray_color(x: f64) -> Color {
+        let x = x.max(0.).min(1.);
+
+        (1.0 - x) * Color::new(1.0, 1.0, 1.0)
+    }
+
+    pub fn at(&self, x: f64) -> Color {
+        let x = x.max(0.).min(1.);
+        let size = self.data.len() - 1;
+        self.data[(x * size as f64) as usize]
+    }
+
     pub fn new(name: ColormapType) -> ColorMap {
         // let data = Vec::new();
         let data = match name {
@@ -1398,37 +1431,5 @@ impl ColorMap {
             ],
         };
         ColorMap { data }
-    }
-
-    #[allow(clippy::many_single_char_names)]
-    pub fn get_hot_color(x: f64) -> Color {
-        let x = x.max(0.).min(1.);
-
-        let r = Color::new(1.0, 0.0, 0.0);
-        let g = Color::new(0.0, 1.0, 0.0);
-        let b = Color::new(0.0, 0.0, 1.0);
-
-        if x < 0.4 {
-            let t = x / 0.4;
-            t * r
-        } else if x < 0.8 {
-            let t = (x - 0.4) / (0.8 - 0.4);
-            r + t * g
-        } else {
-            let t = (x - 0.8) / (1.0 - 0.8);
-            r + g + t * b
-        }
-    }
-
-    pub fn get_gray_color(x: f64) -> Color {
-        let x = x.max(0.).min(1.);
-
-        (1.0 - x) * Color::new(1.0, 1.0, 1.0)
-    }
-
-    pub fn at(&self, x: f64) -> Color {
-        let x = x.max(0.).min(1.);
-        let size = self.data.len() - 1;
-        self.data[(x * size as f64) as usize]
     }
 }
