@@ -1,7 +1,6 @@
-extern crate image;
-extern crate num_complex;
-
 use num_complex::Complex;
+
+use rayon::prelude::*;
 
 mod col;
 use col::ColormapType;
@@ -45,8 +44,6 @@ fn pixel_coordinates(px: u32, py: u32) -> (f64, f64) {
 }
 
 fn main() {
-    let mut imgbuf = image::ImageBuffer::new(SW, SH);
-
     let (x0, y0) = pixel_coordinates(0, 0);
     let (x1, y1) = pixel_coordinates(SW - 1, SH - 1);
     let dx = (x1 - x0) / f64::from(SW - 1);
@@ -54,17 +51,24 @@ fn main() {
 
     let color_map = col::ColorMap::new(ColormapType::Inferno);
 
-    let mut y = y0;
-    for py in 0..SH {
-        let mut x = x0;
-        for px in 0..SW {
+    let mut buf = vec![[0; 4]; (SW * SH) as usize];
+    (0..(SW * SH) as usize)
+        .into_par_iter()
+        .enumerate()
+        .map(|(idx, _)| {
+            let px = (idx % SW as usize) as f64;
+            let py = (idx / SW as usize) as f64;
+            let x = x0 + px * dx;
+            let y = y0 + py * dy;
             let z = complex_function(Complex::new(x, y));
-            let c = complex_color(z, &color_map);
-            imgbuf.put_pixel(px, py, c);
-            x += dx;
-        }
-        y += dy;
-    }
+            let pixel = complex_color(z, &color_map);
+            pixel.0
+        })
+        .collect_into_vec(&mut buf);
+    let buf = buf.iter().flatten().map(|x| *x).collect();
 
-    imgbuf.save("pic.png").unwrap();
+    image::ImageBuffer::<image::Rgba<u8>, _>::from_vec(SW, SH, buf)
+        .unwrap()
+        .save("pic.png")
+        .unwrap();
 }
