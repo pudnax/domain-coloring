@@ -1,6 +1,7 @@
-use num_complex::Complex;
+extern crate image;
+extern crate num_complex;
 
-use rayon::prelude::*;
+use num_complex::Complex;
 
 mod col;
 use col::ColormapType;
@@ -44,6 +45,8 @@ fn pixel_coordinates(px: u32, py: u32) -> (f64, f64) {
 }
 
 fn main() {
+    let mut imgbuf = image::ImageBuffer::new(SW, SH);
+
     let (x0, y0) = pixel_coordinates(0, 0);
     let (x1, y1) = pixel_coordinates(SW - 1, SH - 1);
     let dx = (x1 - x0) / f64::from(SW - 1);
@@ -51,6 +54,7 @@ fn main() {
 
     let color_map = col::ColorMap::new(ColormapType::Inferno);
 
+<<<<<<< HEAD
     let buf = (0..(SW * SH) as usize)
         .into_par_iter()
         .map(|idx| {
@@ -65,9 +69,19 @@ fn main() {
         .map(|x| x.0)
         .collect::<Vec<_>>();
     let buf = buf.iter().flatten().map(|x| *x).collect();
+=======
+    let mut y = y0;
+    for py in 0..SH {
+        let mut x = x0;
+        for px in 0..SW {
+            let z = complex_function(Complex::new(x, y));
+            let c = complex_color(z, &color_map);
+            imgbuf.put_pixel(px, py, c);
+            x += dx;
+        }
+        y += dy;
+    }
+>>>>>>> parent of 86f8db0... Added prallel version
 
-    image::ImageBuffer::<image::Rgba<u8>, _>::from_vec(SW, SH, buf)
-        .unwrap()
-        .save("pic.png")
-        .unwrap();
+    imgbuf.save("pic.png").unwrap();
 }

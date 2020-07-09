@@ -2,3 +2,6 @@
 **/*.rs.bk
 /src/colormap.rs
 /src/col.hpp
+/color_domain*
+/double_fan.png
+/fan.png
