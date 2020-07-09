@@ -51,20 +51,19 @@ fn main() {
 
     let color_map = col::ColorMap::new(ColormapType::Inferno);
 
-    let mut buf = vec![[0; 4]; (SW * SH) as usize];
-    (0..(SW * SH) as usize)
+    let buf = (0..(SW * SH) as usize)
         .into_par_iter()
-        .enumerate()
-        .map(|(idx, _)| {
+        .map(|idx| {
             let px = (idx % SW as usize) as f64;
             let py = (idx / SW as usize) as f64;
             let x = x0 + px * dx;
             let y = y0 + py * dy;
             let z = complex_function(Complex::new(x, y));
             let pixel = complex_color(z, &color_map);
-            pixel.0
+            pixel
         })
-        .collect_into_vec(&mut buf);
+        .map(|x| x.0)
+        .collect::<Vec<_>>();
     let buf = buf.iter().flatten().map(|x| *x).collect();
 
     image::ImageBuffer::<image::Rgba<u8>, _>::from_vec(SW, SH, buf)
