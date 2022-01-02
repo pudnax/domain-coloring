@@ -65,7 +65,7 @@ fn main() {
             pixel.0
         })
         .collect_into_vec(&mut buf);
-    let buf = buf.iter().flatten().map(|x| *x).collect();
+    let buf = buf.iter().flatten().copied().collect();
 
     image::ImageBuffer::<image::Rgba<u8>, _>::from_vec(SW, SH, buf)
         .unwrap()
